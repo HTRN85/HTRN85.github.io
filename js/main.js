@@ -165,6 +165,44 @@ const UIUtils = {
 };
 
 // ============================================================================
+// PRICING & CHECKOUT FUNCTIONS
+// ============================================================================
+
+/**
+ * Handle plan selection from pricing cards
+ */
+function selectPlan(planName, price, maxClients) {
+    console.log('Plan selected:', planName, price, maxClients);
+
+    // Store selected plan in sessionStorage
+    try {
+        sessionStorage.setItem('selectedPlan', JSON.stringify({
+            planName: planName,
+            price: price,
+            maxClients: maxClients
+        }));
+    } catch (e) {
+        console.error('SessionStorage error:', e);
+    }
+
+    // Redirect to checkout page
+    window.location.href = 'checkout.html';
+}
+
+/**
+ * Handle contact sales button
+ */
+function contactSales() {
+    // Show contact modal or redirect to contact page
+    UIUtils.showNotification('Redirecting to contact sales...', 'info');
+
+    // For now, just show an alert
+    setTimeout(() => {
+        alert('For enterprise sales, please email: sales@htrn85dns.com\n\nOr call: 1-800-HTRN-DNS');
+    }, 500);
+}
+
+// ============================================================================
 // LANDING PAGE LOGIC
 // ============================================================================
 
