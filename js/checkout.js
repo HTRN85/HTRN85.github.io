@@ -722,3 +722,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Expose necessary functions to global scope for HTML onclick handlers
 window.goBackToInfo = () => Checkout.goBackToInfo();
+
