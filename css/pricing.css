@@ -1,0 +1,481 @@
+/* Pricing Page Custom Styles */
+
+/* Hero Section */
+.pricing-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 40vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.pricing-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);
+}
+
+.trust-badges .badge {
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+}
+
+/* Price Calculator */
+.price-calculator {
+    background: white;
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+}
+
+.calculator-content .form-control {
+    font-size: 1.5rem;
+    padding: 1rem;
+    border: 2px solid #dee2e6;
+    border-radius: 10px;
+}
+
+.calculator-content .form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+}
+
+.calculator-result {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-top: 2rem;
+}
+
+.result-tier {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.result-price {
+    text-align: center;
+}
+
+.price-display {
+    margin-bottom: 1rem;
+}
+
+.price-currency {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #667eea;
+    vertical-align: top;
+}
+
+.price-amount {
+    font-size: 4rem;
+    font-weight: 800;
+    color: #667eea;
+    line-height: 1;
+}
+
+.price-period {
+    font-size: 1.5rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+/* Pricing Tier Cards */
+.pricing-tier-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.pricing-tier-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+}
+
+.pricing-tier-card.featured {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: 3px solid #ffd700;
+    transform: scale(1.05);
+}
+
+.pricing-tier-card.featured:hover {
+    transform: scale(1.08) translateY(-10px);
+}
+
+.pricing-tier-card.featured * {
+    color: white !important;
+}
+
+.popular-badge {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffd700;
+    color: #333;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    white-space: nowrap;
+}
+
+.tier-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.tier-header h4 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.tier-clients {
+    text-align: center;
+    background: rgba(102, 126, 234, 0.1);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.pricing-tier-card.featured .tier-clients {
+    background: rgba(255,255,255,0.2);
+}
+
+.client-range {
+    display: block;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #667eea;
+    margin-bottom: 0.5rem;
+}
+
+.pricing-tier-card.featured .client-range {
+    color: #ffd700;
+}
+
+.client-label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+}
+
+.tier-price {
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.tier-price .price {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #667eea;
+}
+
+.pricing-tier-card.featured .tier-price .price {
+    color: #ffd700;
+}
+
+.tier-price .period {
+    font-size: 1.2rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.tier-per-client {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.tier-features {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 2rem;
+    flex-grow: 1;
+}
+
+.tier-features li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    font-weight: 500;
+}
+
+.pricing-tier-card.featured .tier-features li {
+    border-bottom-color: rgba(255,255,255,0.2);
+}
+
+.tier-features li:last-child {
+    border-bottom: none;
+}
+
+.tier-features i {
+    margin-right: 0.75rem;
+    color: #28a745;
+}
+
+.pricing-tier-card.featured .tier-features i {
+    color: #ffd700;
+}
+
+/* Custom Enterprise Card */
+.custom-enterprise-card {
+    background: white;
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    border: 2px solid #667eea;
+}
+
+.custom-features {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 0;
+    columns: 2;
+    column-gap: 2rem;
+}
+
+.custom-features li {
+    padding: 0.5rem 0;
+    break-inside: avoid;
+}
+
+.custom-features i {
+    margin-right: 0.75rem;
+}
+
+/* Comparison Table */
+.comparison-table {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.comparison-table thead {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.comparison-table thead th {
+    font-weight: 700;
+    padding: 1.5rem 1rem;
+    border: none;
+    font-size: 0.95rem;
+}
+
+.comparison-table tbody td {
+    padding: 1.25rem 1rem;
+    vertical-align: middle;
+    font-size: 0.95rem;
+}
+
+.comparison-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.comparison-table tbody tr:nth-child(even) {
+    background-color: #fafbfc;
+}
+
+/* ROI Calculator */
+.roi-calculator {
+    background: white;
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+}
+
+.roi-input-card,
+.roi-result-card {
+    padding: 2rem;
+    border-radius: 16px;
+    height: 100%;
+}
+
+.roi-input-card {
+    background: #f8f9fa;
+    border: 2px solid #dee2e6;
+}
+
+.roi-result-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.roi-input-card .form-label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.roi-input-card .form-control {
+    border: 2px solid #dee2e6;
+    padding: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.roi-input-card .form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+}
+
+.roi-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.roi-stat:last-child {
+    border-bottom: none;
+}
+
+.roi-label {
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.roi-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.roi-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 0 1rem;
+}
+
+.roi-total .roi-label {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.roi-total .roi-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+}
+
+.roi-roi {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0 0;
+}
+
+.roi-roi .roi-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.roi-roi .roi-value {
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pricing-hero h1 {
+        font-size: 2.5rem !important;
+    }
+    
+    .trust-badges {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: center;
+    }
+    
+    .trust-badges .badge {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    .pricing-tier-card {
+        margin-bottom: 2rem;
+    }
+    
+    .pricing-tier-card.featured {
+        transform: scale(1);
+    }
+    
+    .comparison-table {
+        font-size: 0.8rem;
+    }
+    
+    .comparison-table thead th,
+    .comparison-table tbody td {
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .custom-features {
+        columns: 1;
+    }
+    
+    .price-calculator,
+    .roi-calculator {
+        padding: 2rem 1.5rem;
+    }
+    
+    .calculator-content .form-control {
+        font-size: 1.2rem;
+    }
+    
+    .price-amount {
+        font-size: 3rem !important;
+    }
+}
+
+/* Animation */
+.pricing-tier-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.pricing-tier-card:nth-child(1) { animation-delay: 0.1s; }
+.pricing-tier-card:nth-child(2) { animation-delay: 0.2s; }
+.pricing-tier-card:nth-child(3) { animation-delay: 0.3s; }
+.pricing-tier-card:nth-child(4) { animation-delay: 0.4s; }
+.pricing-tier-card:nth-child(5) { animation-delay: 0.5s; }
+.pricing-tier-card:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Pulse animation for featured card */
+.pricing-tier-card.featured {
+    animation: fadeInScale 0.6s ease-out 0.2s backwards;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+}

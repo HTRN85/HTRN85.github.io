@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <!-- SECURITY HEADERS -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="Permissions-Policy" content="accelerometer=(), camera=(), geolocation=(), microphone=()">
+    <meta name="description" content="Enterprise DNS Security for Roaming Clients - Protect your workforce anywhere with one-click deployment">
+    <title>HTRN85 DNS Security - Protect Your Roaming Workforce</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="fas fa-shield-alt text-primary"></i> HTRN85 DNS
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#pricing">Pricing</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#how-it-works">How It Works</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#faq">FAQ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-primary ms-lg-3" href="/portal/login">
+                            <i class="fas fa-sign-in-alt"></i> Customer Login
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center min-vh-100 py-5">
+                <div class="col-lg-6">
+                    <div class="hero-content">
+                        <h1 class="display-3 fw-bold mb-4 animate-fade-in">
+                            Protect Your <span class="text-primary">Roaming Workforce</span> Anywhere
+                        </h1>
+                        <p class="lead mb-4 text-muted animate-fade-in-delay-1">
+                            Enterprise-grade DNS security that deploys in minutes. Block malware, phishing, and inappropriate content on any device, anywhere in the world.
+                        </p>
+                        <div class="hero-features mb-4 animate-fade-in-delay-2">
+                            <div class="feature-badge">
+                                <i class="fas fa-check-circle text-success"></i> One-Click Install
+                            </div>
+                            <div class="feature-badge">
+                                <i class="fas fa-check-circle text-success"></i> No Server Required
+                            </div>
+                            <div class="feature-badge">
+                                <i class="fas fa-check-circle text-success"></i> Daily Updates
+                            </div>
+                        </div>
+                        <div class="hero-cta animate-fade-in-delay-3">
+                            <a href="#pricing" class="btn btn-primary btn-lg me-3 px-5 py-3">
+                                <i class="fas fa-rocket"></i> Get Started Now
+                            </a>
+                            <a href="#how-it-works" class="btn btn-outline-secondary btn-lg px-5 py-3">
+                                See How It Works
+                            </a>
+                        </div>
+                        <div class="trust-indicators mt-4 animate-fade-in-delay-4">
+                            <small class="text-muted">
+                                <i class="fas fa-lock"></i> Enterprise Security &nbsp;|&nbsp;
+                                <i class="fas fa-cloud"></i> Cloud-Powered &nbsp;|&nbsp;
+                                <i class="fas fa-chart-line"></i> 99.9% Uptime
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 animate-fade-in-delay-2">
+                    <div class="hero-image">
+                        <div class="dashboard-preview">
+                            <img src="images/dashboard-preview.png" alt="Dashboard Preview" class="img-fluid rounded shadow-lg" onerror="this.src='https://via.placeholder.com/600x400?text=Dashboard+Preview'">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section py-5 bg-primary text-white">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <h2 class="display-4 fw-bold counter" data-target="2000">0</h2>
+                        <p class="mb-0">Maximum Clients</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <h2 class="display-4 fw-bold counter" data-target="99.9">0</h2>
+                        <p class="mb-0">% Uptime SLA</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <h2 class="display-4 fw-bold counter" data-target="1">0</h2>
+                        <p class="mb-0">Minute Setup</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <h2 class="display-4 fw-bold">24/7</h2>
+                        <p class="mb-0">Protection</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section py-5">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold mb-3">Why Choose HTRN85 DNS?</h2>
+                <p class="lead text-muted">Everything you need to protect your roaming workforce</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-icon bg-primary">
+                            <i class="fas fa-mouse-pointer"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">One-Click Installation</h4>
+                        <p class="text-muted">Employees install in seconds with zero technical knowledge. Just click a link and you're protected.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-icon bg-success">
+                            <i class="fas fa-laptop"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Roaming Client Focus</h4>
+                        <p class="text-muted">Built specifically for remote workers. Protection follows them whether at home, coffee shops, or airports.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-icon bg-info">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Cloud-Powered</h4>
+                        <p class="text-muted">No servers to manage. Everything runs in the cloud with automatic updates and zero maintenance.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-icon bg-warning">
+                            <i class="fas fa-shield-virus"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Advanced Threat Blocking</h4>
+                        <p class="text-muted">Block malware, phishing, ransomware, and inappropriate content. Updated daily with latest threats.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-icon bg-danger">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Company Dashboard</h4>
+                        <p class="text-muted">Beautiful branded portal to manage all clients, view activity, and get insights in real-time.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-card">
+                        <div class="feature-icon bg-purple">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Automatic Updates</h4>
+                        <p class="text-muted">Blocklists update daily automatically. New threats blocked as soon as they're discovered.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="how-it-works-section py-5 bg-light">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold mb-3">How It Works</h2>
+                <p class="lead text-muted">Get your team protected in 3 simple steps</p>
+            </div>
+
+            <div class="row g-5">
+                <div class="col-md-4">
+                    <div class="step-card text-center">
+                        <div class="step-number">1</div>
+                        <div class="step-icon">
+                            <i class="fas fa-shopping-cart fa-3x text-primary"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Choose Your Package</h4>
+                        <p class="text-muted">Select a plan based on your number of roaming clients. Pay annually with Square.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="step-card text-center">
+                        <div class="step-number">2</div>
+                        <div class="step-icon">
+                            <i class="fas fa-key fa-3x text-success"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Get Activation Code</h4>
+                        <p class="text-muted">Instantly receive your unique activation code and employee installation link via email.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="step-card text-center">
+                        <div class="step-number">3</div>
+                        <div class="step-icon">
+                            <i class="fas fa-check-circle fa-3x text-info"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Deploy & Protect</h4>
+                        <p class="text-muted">Share the link with employees. They click, install in seconds, and are instantly protected.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-5">
+                <a href="#pricing" class="btn btn-primary btn-lg px-5 py-3">
+                    <i class="fas fa-rocket"></i> Get Started Today
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing-section py-5">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold mb-3">Simple, Transparent Pricing</h2>
+                <p class="lead text-muted">Annual plans based on number of roaming clients</p>
+                <div class="pricing-toggle mt-4">
+                    <span class="text-muted">Pay annually and save</span>
+                </div>
+            </div>
+
+            <div class="row g-4 justify-content-center">
+                <!-- Tier 1 -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h4 class="fw-bold">Starter</h4>
+                            <p class="text-muted mb-0">0 - 99 Clients</p>
+                        </div>
+                        <div class="pricing-price">
+                            <span class="price-amount">$200</span>
+                            <span class="price-period">/year</span>
+                        </div>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check text-success"></i> Up to 99 roaming clients</li>
+                            <li><i class="fas fa-check text-success"></i> Daily blocklist updates</li>
+                            <li><i class="fas fa-check text-success"></i> Company-branded portal</li>
+                            <li><i class="fas fa-check text-success"></i> Email support</li>
+                            <li><i class="fas fa-check text-success"></i> Real-time dashboard</li>
+                        </ul>
+                        <button class="btn btn-outline-primary w-100 btn-lg" onclick="selectPlan('starter', 200, 99)">
+                            Get Started
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tier 2 -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="pricing-card featured">
+                        <div class="pricing-badge">Most Popular</div>
+                        <div class="pricing-header">
+                            <h4 class="fw-bold">Growth</h4>
+                            <p class="text-muted mb-0">100 - 199 Clients</p>
+                        </div>
+                        <div class="pricing-price">
+                            <span class="price-amount">$375</span>
+                            <span class="price-period">/year</span>
+                        </div>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check text-success"></i> Up to 199 roaming clients</li>
+                            <li><i class="fas fa-check text-success"></i> Daily blocklist updates</li>
+                            <li><i class="fas fa-check text-success"></i> Company-branded portal</li>
+                            <li><i class="fas fa-check text-success"></i> Priority support</li>
+                            <li><i class="fas fa-check text-success"></i> Advanced analytics</li>
+                        </ul>
+                        <button class="btn btn-primary w-100 btn-lg" onclick="selectPlan('growth', 375, 199)">
+                            Get Started
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tier 3 -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h4 class="fw-bold">Business</h4>
+                            <p class="text-muted mb-0">200 - 299 Clients</p>
+                        </div>
+                        <div class="pricing-price">
+                            <span class="price-amount">$750</span>
+                            <span class="price-period">/year</span>
+                        </div>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check text-success"></i> Up to 299 roaming clients</li>
+                            <li><i class="fas fa-check text-success"></i> Daily blocklist updates</li>
+                            <li><i class="fas fa-check text-success"></i> Company-branded portal</li>
+                            <li><i class="fas fa-check text-success"></i> Priority support</li>
+                            <li><i class="fas fa-check text-success"></i> Custom whitelists</li>
+                        </ul>
+                        <button class="btn btn-outline-primary w-100 btn-lg" onclick="selectPlan('business', 750, 299)">
+                            Get Started
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Enterprise -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h4 class="fw-bold">Enterprise</h4>
+                            <p class="text-muted mb-0">300+ Clients</p>
+                        </div>
+                        <div class="pricing-price">
+                            <span class="price-amount">Custom</span>
+                        </div>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check text-success"></i> Up to 2,000 clients</li>
+                            <li><i class="fas fa-check text-success"></i> Daily blocklist updates</li>
+                            <li><i class="fas fa-check text-success"></i> Full white-label</li>
+                            <li><i class="fas fa-check text-success"></i> Dedicated support</li>
+                            <li><i class="fas fa-check text-success"></i> Custom integrations</li>
+                        </ul>
+                        <button class="btn btn-outline-primary w-100 btn-lg" onclick="contactSales()">
+                            Contact Sales
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-5">
+                <p class="text-muted">
+                    <i class="fas fa-shield-alt text-primary"></i> All plans include enterprise-grade security &nbsp;|&nbsp;
+                    <i class="fas fa-sync-alt text-success"></i> Daily automatic updates &nbsp;|&nbsp;
+                    <i class="fas fa-headset text-info"></i> Technical support
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq-section py-5 bg-light">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold mb-3">Frequently Asked Questions</h2>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                    How quickly can we deploy this?
+                                </button>
+                            </h2>
+                            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Immediately! After payment, you receive an activation code instantly. Share the installation link with employees and they can install in under 60 seconds with one click.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                    Do employees need admin rights to install?
+                                </button>
+                            </h2>
+                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    No! Our installer is designed to work without admin privileges. Employees simply click the link and the software installs automatically.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                    What gets blocked?
+                                </button>
+                            </h2>
+                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    We block malware, phishing sites, ransomware, cryptojacking, adult content, gambling, and known threat domains. Our blocklists are updated daily with the latest threats.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                    Can we whitelist certain sites?
+                                </button>
+                            </h2>
+                            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Yes! Your company portal includes whitelist management. Add any domains that should never be blocked for your organization.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                    Does this work on Mac/Linux?
+                                </button>
+                            </h2>
+                            <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Currently Windows only. Mac and Linux support coming in Q2 2025.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
+                                    What if we need more clients later?
+                                </button>
+                            </h2>
+                            <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Easily upgrade your plan anytime through your dashboard. We'll prorate the difference based on your remaining subscription period.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section py-5 bg-primary text-white">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h2 class="display-5 fw-bold mb-3">Ready to Protect Your Team?</h2>
+                    <p class="lead mb-0">Join hundreds of companies protecting their roaming workforce with HTRN85 DNS Security</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a href="#pricing" class="btn btn-light btn-lg px-5 py-3">
+                        <i class="fas fa-rocket"></i> Get Started Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer py-5 bg-dark text-white">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="fas fa-shield-alt text-primary"></i> HTRN85 DNS
+                    </h5>
+                    <p class="text-muted">Enterprise DNS security for roaming clients. Protect your workforce anywhere with one-click deployment.</p>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h6 class="fw-bold mb-3">Product</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#features" class="text-muted">Features</a></li>
+                        <li><a href="#pricing" class="text-muted">Pricing</a></li>
+                        <li><a href="#how-it-works" class="text-muted">How It Works</a></li>
+                        <li><a href="#faq" class="text-muted">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h6 class="fw-bold mb-3">Company</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-muted">About Us</a></li>
+                        <li><a href="#" class="text-muted">Contact</a></li>
+                        <li><a href="#" class="text-muted">Blog</a></li>
+                        <li><a href="#" class="text-muted">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h6 class="fw-bold mb-3">Legal</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-muted">Privacy Policy</a></li>
+                        <li><a href="#" class="text-muted">Terms of Service</a></li>
+                        <li><a href="#" class="text-muted">Security</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h6 class="fw-bold mb-3">Connect</h6>
+                    <div class="social-links">
+                        <a href="#" class="text-muted me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-muted me-3"><i class="fab fa-linkedin fa-lg"></i></a>
+                        <a href="#" class="text-muted me-3"><i class="fab fa-github fa-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4 bg-secondary">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="text-muted mb-0">&copy; 2024 HTRN85 DNS Security. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-muted mb-0">Made with <i class="fas fa-heart text-danger"></i> for secure businesses</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <!-- SECURITY HEADERS -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="Permissions-Policy" content="accelerometer=(), camera=(), geolocation=(), microphone=()">
+    <title>Purchase Complete - HTRN85 DNS Security</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/success.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">
+                <i class="fas fa-shield-alt text-primary"></i> HTRN85 DNS
+            </a>
+        </div>
+    </nav>
+
+    <!-- Success Content -->
+    <div class="success-container">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    
+                    <!-- Success Icon -->
+                    <div class="text-center mb-5">
+                        <div class="success-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h1 class="display-4 fw-bold mb-3">Welcome to HTRN85 DNS!</h1>
+                        <p class="lead text-muted">Your payment was successful. Let's get you protected!</p>
+                    </div>
+
+                    <!-- Activation Code Card -->
+                    <div class="activation-card mb-4">
+                        <div class="card-header">
+                            <h4 class="mb-0"><i class="fas fa-key text-warning"></i> Your Activation Code</h4>
+                        </div>
+                        <div class="card-body text-center">
+                            <p class="text-muted mb-3">Save this code - you'll need it to activate your clients</p>
+                            <div class="activation-code-display" id="activationCodeDisplay">
+                                <div class="code-value" id="activationCode">HTRN-XXXX-XXXX-XXXX</div>
+                                <button class="btn btn-outline-primary mt-3" onclick="copyActivationCode()">
+                                    <i class="fas fa-copy"></i> Copy Code
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Next Steps -->
+                    <div class="next-steps-card mb-4">
+                        <div class="card-header">
+                            <h4 class="mb-0"><i class="fas fa-list-check text-success"></i> Next Steps</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="step-item">
+                                <div class="step-icon bg-primary">1</div>
+                                <div class="step-content">
+                                    <h5 class="fw-bold mb-2">Check Your Email</h5>
+                                    <p class="text-muted mb-0">
+                                        We've sent your activation code and login credentials to 
+                                        <strong id="customerEmail">your email</strong>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="step-item">
+                                <div class="step-icon bg-success">2</div>
+                                <div class="step-content">
+                                    <h5 class="fw-bold mb-2">Access Your Company Portal</h5>
+                                    <p class="text-muted mb-2">Login to your customized dashboard:</p>
+                                    <a href="/portal/login" class="btn btn-outline-success">
+                                        <i class="fas fa-sign-in-alt"></i> Go to Portal
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="step-item">
+                                <div class="step-icon bg-info">3</div>
+                                <div class="step-content">
+                                    <h5 class="fw-bold mb-2">Download Client Installer</h5>
+                                    <p class="text-muted mb-2">
+                                        Get the customized installer for <strong id="companyName">your company</strong>:
+                                    </p>
+                                    <button class="btn btn-info" onclick="downloadInstaller()">
+                                        <i class="fas fa-download"></i> Download setup.exe
+                                    </button>
+                                    <p class="small text-muted mt-2 mb-0">
+                                        Pre-configured with your activation code
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="step-item">
+                                <div class="step-icon bg-warning">4</div>
+                                <div class="step-content">
+                                    <h5 class="fw-bold mb-2">Deploy to Your Team</h5>
+                                    <p class="text-muted mb-2">
+                                        Share the installer with employees. They simply:
+                                    </p>
+                                    <ul class="deployment-list">
+                                        <li>Click the installer link</li>
+                                        <li>Watch the progress bar</li>
+                                        <li>See "Installation Complete"</li>
+                                        <li>Instantly protected!</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Purchase Summary -->
+                    <div class="summary-card">
+                        <div class="card-header">
+                            <h4 class="mb-0"><i class="fas fa-receipt text-primary"></i> Purchase Summary</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="summary-item">
+                                        <label>Company:</label>
+                                        <value id="summaryCompany">-</value>
+                                    </div>
+                                    <div class="summary-item">
+                                        <label>Contact:</label>
+                                        <value id="summaryContact">-</value>
+                                    </div>
+                                    <div class="summary-item">
+                                        <label>Email:</label>
+                                        <value id="summaryEmail">-</value>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="summary-item">
+                                        <label>Plan:</label>
+                                        <value id="summaryPlan">-</value>
+                                    </div>
+                                    <div class="summary-item">
+                                        <label>Clients:</label>
+                                        <value id="summaryClients">-</value>
+                                    </div>
+                                    <div class="summary-item">
+                                        <label>Amount Paid:</label>
+                                        <value class="text-success fw-bold" id="summaryAmount">$0</value>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-4">
+                                <button class="btn btn-outline-secondary" onclick="window.print()">
+                                    <i class="fas fa-print"></i> Print Receipt
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Help Section -->
+                    <div class="help-section text-center mt-5">
+                        <h5 class="fw-bold mb-3">Need Help Getting Started?</h5>
+                        <p class="text-muted mb-4">Our team is here to help you deploy successfully</p>
+                        <div class="row g-3 justify-content-center">
+                            <div class="col-md-4">
+                                <a href="/docs/quick-start.html" class="help-card">
+                                    <i class="fas fa-book fa-2x text-primary mb-2"></i>
+                                    <h6 class="fw-bold">Quick Start Guide</h6>
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="/docs/video-tutorials.html" class="help-card">
+                                    <i class="fas fa-video fa-2x text-success mb-2"></i>
+                                    <h6 class="fw-bold">Video Tutorials</h6>
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="/contact.html" class="help-card">
+                                    <i class="fas fa-headset fa-2x text-info mb-2"></i>
+                                    <h6 class="fw-bold">Contact Support</h6>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer py-4 bg-light">
+        <div class="container text-center">
+            <p class="text-muted mb-0">&copy; 2024 HTRN85 DNS Security. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/success.js"></script>
+</body>
+</html>

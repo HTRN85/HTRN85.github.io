@@ -1,0 +1,367 @@
+/* Checkout Page Styles */
+
+.checkout-container {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 100vh;
+}
+
+/* Checkout Steps */
+.checkout-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 3rem;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.step-number {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #dee2e6;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.step.active .step-number {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    transform: scale(1.1);
+}
+
+.step.complete .step-number {
+    background: #28a745;
+    color: white;
+}
+
+.step.complete .step-number::after {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+}
+
+.step-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #6c757d;
+}
+
+.step.active .step-label {
+    color: #667eea;
+}
+
+.step.complete .step-label {
+    color: #28a745;
+}
+
+.step-line {
+    width: 100px;
+    height: 3px;
+    background: #dee2e6;
+    margin: 0 1rem;
+    margin-bottom: 2rem;
+}
+
+/* Checkout Cards */
+.checkout-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.checkout-card .card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    border: none;
+}
+
+.checkout-card .card-body {
+    padding: 2rem;
+}
+
+/* Form Styles */
+.form-label {
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    border: 2px solid #dee2e6;
+    border-radius: 10px;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+}
+
+.form-control::placeholder {
+    color: #adb5bd;
+}
+
+/* Square Card Container */
+#card-container {
+    border: 2px solid #dee2e6;
+    border-radius: 10px;
+    padding: 1rem;
+    min-height: 100px;
+    transition: all 0.3s ease;
+}
+
+#card-container:focus-within {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+}
+
+/* Order Summary */
+.order-summary {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.summary-section {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.summary-section:last-child {
+    border-bottom: none;
+}
+
+.plan-info {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 1.5rem;
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+}
+
+.plan-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.plan-clients {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.billing-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f1f3f5;
+}
+
+.billing-line:last-child {
+    border-bottom: none;
+}
+
+.total-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+.total-line span:first-child {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.total-amount {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #667eea;
+}
+
+.included-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.included-features li {
+    padding: 0.5rem 0;
+    font-size: 0.95rem;
+}
+
+.included-features i {
+    margin-right: 0.5rem;
+}
+
+.guarantee-badge {
+    background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%);
+    border-radius: 12px;
+    padding: 1.5rem !important;
+}
+
+/* Trust Badges */
+.trust-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.trust-badges {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.trust-item {
+    text-align: center;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+.loading-content {
+    text-align: center;
+    color: white;
+}
+
+/* Alert Messages */
+.alert-custom {
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.alert-success-custom {
+    background: #d4edda;
+    color: #155724;
+    border-left: 4px solid #28a745;
+}
+
+.alert-danger-custom {
+    background: #f8d7da;
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+}
+
+.alert-info-custom {
+    background: #d1ecf1;
+    color: #0c5460;
+    border-left: 4px solid #17a2b8;
+}
+
+/* Buttons */
+#card-button {
+    font-size: 1.25rem;
+    padding: 1rem;
+    font-weight: 700;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+#card-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+}
+
+#card-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .order-summary {
+        position: static !important;
+        margin-top: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .checkout-steps {
+        font-size: 0.85rem;
+    }
+    
+    .step-line {
+        width: 50px;
+    }
+    
+    .step-number {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    
+    .step-label {
+        font-size: 0.75rem;
+    }
+    
+    .total-amount {
+        font-size: 2rem;
+    }
+    
+    .trust-badges {
+        gap: 1rem;
+    }
+    
+    .trust-item {
+        flex: 0 0 45%;
+    }
+}
+
+/* Animation */
+.checkout-card {
+    animation: slideInUp 0.5s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Square Payment Form Customization */
+#card-container iframe {
+    border-radius: 8px;
+}
