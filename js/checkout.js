@@ -742,9 +742,9 @@ const AbandonedCheckoutTracker = {
     // EmailJS Configuration
     // Sign up free at https://www.emailjs.com then fill in these three values:
     // -----------------------------------------------------------------------
-    EMAILJS_PUBLIC_KEY:  'YOUR_EMAILJS_PUBLIC_KEY',   // Account > API Keys
-    EMAILJS_SERVICE_ID:  'YOUR_EMAILJS_SERVICE_ID',   // Email Services tab
-    EMAILJS_TEMPLATE_ID: 'YOUR_EMAILJS_TEMPLATE_ID',  // Email Templates tab
+    EMAILJS_PUBLIC_KEY:  'TYeIprY1f6Oy_UGZa',   // Account > API Keys
+    EMAILJS_SERVICE_ID:  'service_tjmly19',   // Email Services tab
+    EMAILJS_TEMPLATE_ID: 'template_4h4cl9a',  // Email Templates tab
     // -----------------------------------------------------------------------
 
     OWNER_EMAIL: 'htrn85@gmail.com',
