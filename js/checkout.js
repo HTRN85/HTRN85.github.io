@@ -730,3 +730,228 @@ document.addEventListener('DOMContentLoaded', () => {
 // Expose necessary functions to global scope for HTML onclick handlers
 window.goBackToInfo = () => Checkout.goBackToInfo();
 
+// ============================================================================
+// ABANDONED CHECKOUT TRACKER
+// Fires when a user leaves before clicking "Continue to Payment"
+// Sends a notification email to htrn85@gmail.com via EmailJS
+// ============================================================================
+
+const AbandonedCheckoutTracker = {
+
+    // -----------------------------------------------------------------------
+    // EmailJS Configuration
+    // Sign up free at https://www.emailjs.com then fill in these three values:
+    // -----------------------------------------------------------------------
+    EMAILJS_PUBLIC_KEY:  'YOUR_EMAILJS_PUBLIC_KEY',   // Account > API Keys
+    EMAILJS_SERVICE_ID:  'YOUR_EMAILJS_SERVICE_ID',   // Email Services tab
+    EMAILJS_TEMPLATE_ID: 'YOUR_EMAILJS_TEMPLATE_ID',  // Email Templates tab
+    // -----------------------------------------------------------------------
+
+    OWNER_EMAIL: 'htrn85@gmail.com',
+    hasAdvancedToPayment: false,
+    hasSentAlert: false,
+
+    /**
+     * Start tracking — call this once after DOM ready
+     */
+    init() {
+        // Mark when user successfully moves past Step 1
+        const companyForm = document.getElementById('companyInfoForm');
+        if (companyForm) {
+            companyForm.addEventListener('submit', () => {
+                this.hasAdvancedToPayment = true;
+            });
+        }
+
+        // Capture when user switches tabs or minimises window
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                this.captureAndNotify();
+            }
+        });
+
+        // Capture when user navigates away / closes tab
+        window.addEventListener('beforeunload', () => {
+            this.captureAndNotify();
+        });
+
+        // Also capture after 30 s of inactivity on the page
+        let inactivityTimer;
+        const resetTimer = () => {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => this.captureAndNotify(), 30000);
+        };
+        ['mousemove', 'keydown', 'scroll', 'touchstart'].forEach(ev =>
+            document.addEventListener(ev, resetTimer, { passive: true })
+        );
+        resetTimer();
+    },
+
+    /**
+     * Read every input on the page
+     */
+    captureFormData() {
+        const get = id => {
+            const el = document.getElementById(id);
+            return el ? (el.value || '').trim() : '';
+        };
+
+        return {
+            companyName : get('companyName'),
+            firstName   : get('firstName'),
+            lastName    : get('lastName'),
+            email       : get('email'),
+            phone       : get('phone'),
+            numClients  : get('numClients'),
+        };
+    },
+
+    /**
+     * Snapshot the current order summary from the DOM
+     */
+    captureOrderSummary() {
+        const get = id => {
+            const el = document.getElementById(id);
+            return el ? el.textContent.trim() : '—';
+        };
+
+        // Also pull from CheckoutState if available
+        const plan = (typeof CheckoutState !== 'undefined' && CheckoutState.selectedPlan)
+            ? CheckoutState.selectedPlan
+            : null;
+
+        return {
+            planName   : plan ? plan.name   : get('summaryPlanName'),
+            planPrice  : plan ? `$${plan.price}` : get('summaryPrice'),
+            maxClients : plan ? plan.maxClients : get('summaryPlanClients'),
+            total      : plan ? `$${plan.price}` : get('summaryTotal'),
+        };
+    },
+
+    /**
+     * Send the abandonment email — only fires once per page load
+     */
+    captureAndNotify() {
+        // Don't fire if user completed Step 1 or we've already sent
+        if (this.hasAdvancedToPayment || this.hasSentAlert) return;
+
+        const data  = this.captureFormData();
+        const order = this.captureOrderSummary();
+
+        // Only notify if the visitor typed at least their email
+        if (!data.email) return;
+
+        this.hasSentAlert = true; // Prevent duplicate sends
+
+        const timestamp = new Date().toLocaleString('en-US', {
+            timeZone: 'America/New_York',
+            dateStyle: 'full',
+            timeStyle: 'short'
+        });
+
+        const templateParams = {
+            to_email     : this.OWNER_EMAIL,
+            subject      : `⚠️ Abandoned Checkout — ${data.email}`,
+            timestamp    : timestamp,
+            page_url     : window.location.href,
+
+            // Customer info
+            company_name : data.companyName || '(not entered)',
+            first_name   : data.firstName   || '(not entered)',
+            last_name    : data.lastName    || '(not entered)',
+            customer_email: data.email,
+            phone        : data.phone       || '(not entered)',
+            num_clients  : data.numClients  || '(not entered)',
+
+            // Order info
+            plan_name    : order.planName   || '(unknown)',
+            plan_price   : order.planPrice  || '(unknown)',
+            max_clients  : order.maxClients || '(unknown)',
+            total_due    : order.total      || '(unknown)',
+
+            // Full snapshot used for the "screenshot" section of the email
+            snapshot_html: this._buildSnapshotHTML(data, order, timestamp),
+        };
+
+        if (typeof emailjs === 'undefined') {
+            console.warn('[AbandonedCheckout] EmailJS not loaded — cannot send alert.');
+            return;
+        }
+
+        emailjs.init(this.EMAILJS_PUBLIC_KEY);
+
+        emailjs.send(this.EMAILJS_SERVICE_ID, this.EMAILJS_TEMPLATE_ID, templateParams)
+            .then(() => console.log('[AbandonedCheckout] Alert sent for', data.email))
+            .catch(err => console.error('[AbandonedCheckout] Send failed', err));
+    },
+
+    /**
+     * Build a formatted HTML "screenshot" of the checkout form
+     */
+    _buildSnapshotHTML(data, order, timestamp) {
+        return `
+<div style="font-family:Arial,sans-serif;max-width:600px;border:1px solid #ddd;border-radius:8px;overflow:hidden;">
+  <div style="background:#1a1a2e;color:white;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;">
+    <strong>🛡️ HTRN85 DNS — Checkout Page</strong>
+    <small style="opacity:0.7;">${timestamp}</small>
+  </div>
+
+  <div style="padding:24px;background:#f8f9fa;">
+    <h3 style="margin:0 0 16px;color:#333;">📋 Company Information (Step 1)</h3>
+    <table style="width:100%;border-collapse:collapse;background:white;border-radius:6px;overflow:hidden;">
+      <tr style="border-bottom:1px solid #eee;">
+        <td style="padding:10px 16px;color:#666;width:40%;">Company Name</td>
+        <td style="padding:10px 16px;font-weight:600;">${data.companyName || '<em style="color:#aaa">not entered</em>'}</td>
+      </tr>
+      <tr style="border-bottom:1px solid #eee;">
+        <td style="padding:10px 16px;color:#666;">First Name</td>
+        <td style="padding:10px 16px;font-weight:600;">${data.firstName || '<em style="color:#aaa">not entered</em>'}</td>
+      </tr>
+      <tr style="border-bottom:1px solid #eee;">
+        <td style="padding:10px 16px;color:#666;">Last Name</td>
+        <td style="padding:10px 16px;font-weight:600;">${data.lastName || '<em style="color:#aaa">not entered</em>'}</td>
+      </tr>
+      <tr style="border-bottom:1px solid #eee;">
+        <td style="padding:10px 16px;color:#666;">Email Address</td>
+        <td style="padding:10px 16px;font-weight:600;color:#0d6efd;">${data.email}</td>
+      </tr>
+      <tr style="border-bottom:1px solid #eee;">
+        <td style="padding:10px 16px;color:#666;">Phone</td>
+        <td style="padding:10px 16px;font-weight:600;">${data.phone || '<em style="color:#aaa">not entered</em>'}</td>
+      </tr>
+      <tr>
+        <td style="padding:10px 16px;color:#666;">Roaming Clients</td>
+        <td style="padding:10px 16px;font-weight:600;">${data.numClients || '<em style="color:#aaa">not entered</em>'}</td>
+      </tr>
+    </table>
+
+    <h3 style="margin:24px 0 16px;color:#333;">🛒 Order Summary</h3>
+    <table style="width:100%;border-collapse:collapse;background:white;border-radius:6px;overflow:hidden;">
+      <tr style="border-bottom:1px solid #eee;">
+        <td style="padding:10px 16px;color:#666;">Plan</td>
+        <td style="padding:10px 16px;font-weight:600;">${order.planName}</td>
+      </tr>
+      <tr style="border-bottom:1px solid #eee;">
+        <td style="padding:10px 16px;color:#666;">Max Clients</td>
+        <td style="padding:10px 16px;font-weight:600;">${order.maxClients}</td>
+      </tr>
+      <tr style="background:#fff8e1;">
+        <td style="padding:10px 16px;color:#666;font-weight:700;">Total Due</td>
+        <td style="padding:10px 16px;font-weight:700;font-size:1.2em;color:#e65100;">${order.total}</td>
+      </tr>
+    </table>
+
+    <div style="margin-top:20px;padding:16px;background:#fff3cd;border-left:4px solid #ffc107;border-radius:4px;">
+      <strong>⚠️ This customer left before completing payment.</strong><br>
+      <small>Page: <a href="${window.location.href}">${window.location.href}</a></small>
+    </div>
+  </div>
+</div>`;
+    }
+};
+
+// Start tracking immediately
+document.addEventListener('DOMContentLoaded', () => {
+    AbandonedCheckoutTracker.init();
+});
+
