@@ -338,7 +338,7 @@ const PricingPage = {
             maxClients: Math.abs(maxClients)
         }));
 
-        window.location.href = '/checkout.html';
+        window.location.href = 'checkout.html';
     },
 
     /**
@@ -359,7 +359,7 @@ const PricingPage = {
      * Contact sales
      */
     contactSales() {
-        window.location.href = '/contact.html';
+        window.location.href = 'mailto:sales@htrn85dns.com?subject=Enterprise%20Sales%20Inquiry&body=Hi%2C%20I%27m%20interested%20in%20an%20enterprise%20DNS%20Security%20plan.%20Please%20contact%20me.';
     },
 
     /**
