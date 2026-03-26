@@ -232,7 +232,7 @@ const SuccessPage = {
     redirectToPricing() {
         // Clear any invalid session data
         this.clearSessionData();
-        window.location.href = '/pricing.html';
+        window.location.href = 'pricing.html';
     },
 
     /**
