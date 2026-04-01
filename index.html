@@ -326,8 +326,8 @@
             </div>
 
             <div class="row g-4 justify-content-center">
-                <!-- Tier 1 -->
-                <div class="col-lg-3 col-md-6">
+                <!-- Starter -->
+                <div class="col-xl-4 col-lg-6 col-md-6">
                     <div class="pricing-card">
                         <div class="pricing-header">
                             <h4 class="fw-bold">Starter</h4>
@@ -350,8 +350,8 @@
                     </div>
                 </div>
 
-                <!-- Tier 2 -->
-                <div class="col-lg-3 col-md-6">
+                <!-- Growth -->
+                <div class="col-xl-4 col-lg-6 col-md-6">
                     <div class="pricing-card featured">
                         <div class="pricing-badge">Most Popular</div>
                         <div class="pricing-header">
@@ -375,8 +375,8 @@
                     </div>
                 </div>
 
-                <!-- Tier 3 -->
-                <div class="col-lg-3 col-md-6">
+                <!-- Business -->
+                <div class="col-xl-4 col-lg-6 col-md-6">
                     <div class="pricing-card">
                         <div class="pricing-header">
                             <h4 class="fw-bold">Business</h4>
@@ -399,31 +399,89 @@
                     </div>
                 </div>
 
-                <!-- Enterprise -->
-                <div class="col-lg-3 col-md-6">
+                <!-- Professional -->
+                <div class="col-xl-4 col-lg-6 col-md-6">
                     <div class="pricing-card">
                         <div class="pricing-header">
-                            <h4 class="fw-bold">Enterprise</h4>
-                            <p class="text-muted mb-0">300+ Clients</p>
+                            <h4 class="fw-bold">Professional</h4>
+                            <p class="text-muted mb-0">300 - 499 Clients</p>
                         </div>
                         <div class="pricing-price">
-                            <span class="price-amount">Custom</span>
+                            <span class="price-amount">$1,125</span>
+                            <span class="price-period">/year</span>
                         </div>
                         <ul class="pricing-features">
-                            <li><i class="fas fa-check text-success"></i> Up to 2,000 clients</li>
+                            <li><i class="fas fa-check text-success"></i> Up to 499 roaming clients</li>
                             <li><i class="fas fa-check text-success"></i> Daily blocklist updates</li>
-                            <li><i class="fas fa-check text-success"></i> Full white-label</li>
+                            <li><i class="fas fa-check text-success"></i> Full white-label options</li>
                             <li><i class="fas fa-check text-success"></i> Dedicated support</li>
                             <li><i class="fas fa-check text-success"></i> Custom integrations</li>
                         </ul>
-                        <button class="btn btn-outline-primary w-100 btn-lg" onclick="contactSales()">
-                            Contact Sales
+                        <button class="btn btn-outline-primary w-100 btn-lg" onclick="selectPlan('professional', 1125, 499)">
+                            Get Started
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Enterprise -->
+                <div class="col-xl-4 col-lg-6 col-md-6">
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h4 class="fw-bold">Enterprise</h4>
+                            <p class="text-muted mb-0">500 - 999 Clients</p>
+                        </div>
+                        <div class="pricing-price">
+                            <span class="price-amount">$2,500</span>
+                            <span class="price-period">/year</span>
+                        </div>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check text-success"></i> Up to 999 roaming clients</li>
+                            <li><i class="fas fa-check text-success"></i> Daily blocklist updates</li>
+                            <li><i class="fas fa-check text-success"></i> Full white-label</li>
+                            <li><i class="fas fa-check text-success"></i> 24/7 dedicated support</li>
+                            <li><i class="fas fa-check text-success"></i> Custom SLA available</li>
+                        </ul>
+                        <button class="btn btn-outline-primary w-100 btn-lg" onclick="selectPlan('enterprise', 2500, 999)">
+                            Get Started
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Enterprise Plus -->
+                <div class="col-xl-4 col-lg-6 col-md-6">
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h4 class="fw-bold">Enterprise Plus</h4>
+                            <p class="text-muted mb-0">1,000 - 2,000 Clients</p>
+                        </div>
+                        <div class="pricing-price">
+                            <span class="price-amount">$4,000</span>
+                            <span class="price-period">/year</span>
+                        </div>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check text-success"></i> Up to 2,000 roaming clients</li>
+                            <li><i class="fas fa-check text-success"></i> Daily blocklist updates</li>
+                            <li><i class="fas fa-check text-success"></i> Full white-label</li>
+                            <li><i class="fas fa-check text-success"></i> Dedicated account manager</li>
+                            <li><i class="fas fa-check text-success"></i> Custom development</li>
+                        </ul>
+                        <button class="btn btn-outline-primary w-100 btn-lg" onclick="selectPlan('enterprise-plus', 4000, 2000)">
+                            Get Started
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div class="text-center mt-5">
+            <div class="text-center mt-4">
+                <a href="pricing.html" class="btn btn-outline-secondary btn-lg px-4">
+                    <i class="fas fa-list-ul"></i> View Full Pricing &amp; Calculator
+                </a>
+                <p class="text-muted mt-3 mb-0">
+                    <small>Need more than 2,000 clients? <a href="mailto:sales@htrn85dns.com">Contact Sales</a></small>
+                </p>
+            </div>
+
+            <div class="text-center mt-4">
                 <p class="text-muted">
                     <i class="fas fa-shield-alt text-primary"></i> All plans include enterprise-grade security &nbsp;|&nbsp;
                     <i class="fas fa-sync-alt text-success"></i> Daily automatic updates &nbsp;|&nbsp;
