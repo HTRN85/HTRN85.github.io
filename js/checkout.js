@@ -18,13 +18,11 @@
 
 const CONFIG = Object.freeze({
     // Square PUBLIC Application ID only (safe for frontend)
-    // TODO: Replace with your PRODUCTION Square Application ID from https://developer.squareup.com/apps
-    SQUARE_APPLICATION_ID: 'YOUR_PRODUCTION_SQUARE_APP_ID',
-    // TODO: Replace with your PRODUCTION Square Location ID
-    SQUARE_LOCATION_ID: 'YOUR_PRODUCTION_SQUARE_LOCATION_ID',
+    SQUARE_APPLICATION_ID: 'sq0idp-sCOsOqVKjUf5_wl46dGsfg',
+    SQUARE_LOCATION_ID: 'L61TZHBSXHFEB',
 
     // Backend API endpoint (all sensitive operations happen here)
-    API_BASE_URL: '/api',
+    API_BASE_URL: 'https://your-backend-domain.com/api',
 
     // Validation limits
     MAX_CLIENTS: 2000,
