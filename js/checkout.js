@@ -687,16 +687,12 @@ const Payment = {
             );
 
             if (response.success) {
-                // Store ONLY non-sensitive data for display on success page
-                sessionStorage.setItem('purchaseResult', JSON.stringify({
-                    activationCode: response.activationKey,      // backend: activationKey
-                    planName:       response.planType            // backend: planType
-                                    || CheckoutState.selectedPlan?.name,
-                    maxClients:     response.maxComputers        // backend: maxComputers
-                                    || CheckoutState.selectedPlan?.maxClients,
-                    expiryDate:     response.expiryDate,
-                    message:        response.message
-                }));
+                // Store purchase data in the individual keys that success.js reads
+                sessionStorage.setItem('activationCode', response.activationKey || '');
+                sessionStorage.setItem('customerEmail', CheckoutState.customerInfo?.email || '');
+                sessionStorage.setItem('companyName', CheckoutState.customerInfo?.companyName || '');
+                sessionStorage.setItem('planName', response.planType || CheckoutState.selectedPlan?.name || '');
+                sessionStorage.setItem('planPrice', String(CheckoutState.selectedPlan?.price || 0));
 
                 // Clear sensitive data
                 CheckoutState.customerInfo = null;
