@@ -22,7 +22,7 @@ const CONFIG = Object.freeze({
     SQUARE_LOCATION_ID: 'L61TZHBSXHFEB',
 
     // Backend API endpoint (all sensitive operations happen here)
-    API_BASE_URL: 'https://your-backend-domain.com/api',
+    API_BASE_URL: 'http://localhost:5104/api',
 
     // Validation limits
     MAX_CLIENTS: 2000,
