@@ -790,7 +790,8 @@ window.applyPromoCode = async function () {
             btn.disabled = false;
         }
     } catch (err) {
-        status.innerHTML = '<span class="text-danger">Could not validate code. Try again.</span>';
+        status.innerHTML = `<span class="text-danger"><i class="fas fa-exclamation-triangle me-1"></i>Network error: ${err.message}. Check console for details.</span>`;
+        console.error('[PromoCode] validate-promo fetch failed:', err);
         btn.disabled = false;
     }
 };
