@@ -21,7 +21,8 @@ const CONFIG = Object.freeze({
     SQUARE_APPLICATION_ID: 'sq0idp-sCOsOqVKjUf5_wl46dGsfg',
     SQUARE_LOCATION_ID: 'L61TZHBSXHFEB',
 
-    // Backend API endpoint (all sensitive operations happen here)
+    // Backend API endpoint — always the App Runner backend regardless of which
+    // frontend domain is serving the page (GitHub Pages or custom domain)
     API_BASE_URL: 'https://yjbgqnugsw.us-east-1.awsapprunner.com/api',
 
     // Validation limits

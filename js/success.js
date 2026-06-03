@@ -1,6 +1,6 @@
 'use strict';
 
-const API_BASE_URL = 'https://yjbgqnugsw.us-east-1.awsapprunner.com/api';
+const API_BASE_URL = 'https://yjbgqnugsw.us-east-1.awsapprunner.com/api'; // App Runner backend
 
 document.addEventListener('DOMContentLoaded', () => {
     const key     = sessionStorage.getItem('activationCode') || '';
