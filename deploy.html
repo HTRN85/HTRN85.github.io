@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploy to Remote Clients - HTRN85 DNS Security</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        body { background: #f0f2f5; font-family: 'Inter', sans-serif; }
+
+        .hero {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+            color: white;
+            padding: 60px 0 40px;
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+        }
+
+        .step-badge {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: #0d6efd;
+            color: white;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-weight: 600;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        #emailPanel { display: none; }
+
+        .email-preview {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 340px;
+            overflow-y: auto;
+        }
+
+        .copy-btn {
+            position: relative;
+        }
+
+        .copied-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #198754;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .copied-toast.show { opacity: 1; }
+
+        .key-info-bar {
+            background: #e8f4fd;
+            border: 1px solid #bee5fb;
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Nav -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">
+                <i class="fas fa-shield-alt text-primary"></i> HTRN85 DNS
+            </a>
+            <div class="ms-auto">
+                <a href="customer-portal.html" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-tachometer-alt me-1"></i> Portal
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="hero">
+        <div class="container text-center">
+            <i class="fas fa-paper-plane fa-3x mb-3 text-primary"></i>
+            <h1 class="fw-bold mb-2">Deploy to Remote Clients</h1>
+            <p class="lead text-white-50">Generate a ready-to-send email your remote users can use to install DNS Security</p>
+        </div>
+    </div>
+
+    <div class="container py-5" style="max-width: 700px;">
+
+        <!-- Step 1: Enter Key -->
+        <div class="step-card">
+            <div class="step-title">
+                <span class="step-badge">1</span>
+                Enter Your Activation Key
+            </div>
+            <p class="text-muted small mb-3">
+                This is the key that was emailed to you after purchase (format: <code>DNS-XXXX-XXXX-XXXX</code>).
+                It is also stored in <code>HKLM\SOFTWARE\HTRN85DNS\ActivationKey</code> on your admin computer.
+            </p>
+            <div class="input-group">
+                <input type="text" id="activationKeyInput" class="form-control form-control-lg"
+                       placeholder="DNS-XXXX-XXXX-XXXX" autocomplete="off" spellcheck="false"
+                       style="font-family: monospace; letter-spacing: 1px;">
+                <button class="btn btn-primary btn-lg px-4" id="generateBtn" onclick="generateEmail()">
+                    <i class="fas fa-envelope me-2"></i>Generate Email
+                </button>
+            </div>
+            <div id="keyError" class="text-danger small mt-2" style="display:none;"></div>
+        </div>
+
+        <!-- Step 2: Copy & Send -->
+        <div id="emailPanel">
+            <div class="step-card">
+                <div class="step-title">
+                    <span class="step-badge">2</span>
+                    Copy &amp; Send to Remote Users
+                </div>
+
+                <!-- Company info bar -->
+                <div class="key-info-bar">
+                    <div class="row g-2 align-items-center">
+                        <div class="col-auto"><i class="fas fa-building text-primary me-1"></i></div>
+                        <div class="col">
+                            <strong id="infoCompany"></strong>
+                            &nbsp;&mdash;&nbsp;
+                            <span class="badge bg-primary" id="infoPlan"></span>
+                            &nbsp;
+                            <span class="text-muted small">up to <strong id="infoMax"></strong> computers</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subject line -->
+                <label class="form-label fw-semibold text-muted small">EMAIL SUBJECT</label>
+                <div class="input-group mb-3">
+                    <input type="text" id="emailSubject" class="form-control" readonly>
+                    <button class="btn btn-outline-secondary" onclick="copyField('emailSubject', 'Subject copied!')">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+
+                <!-- Body -->
+                <label class="form-label fw-semibold text-muted small">EMAIL BODY</label>
+                <div class="email-preview" id="emailBody"></div>
+
+                <div class="d-flex gap-2 mt-3">
+                    <button class="btn btn-success flex-fill copy-btn" onclick="copyEmailBody()">
+                        <i class="fas fa-copy me-2"></i>Copy Email Body
+                    </button>
+                    <a id="mailtoLink" href="#" class="btn btn-outline-primary flex-fill">
+                        <i class="fas fa-external-link-alt me-2"></i>Open in Mail App
+                    </a>
+                </div>
+
+                <p class="text-muted small mt-3 mb-0">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Paste the email body into your mail client (Outlook, Gmail, etc.) and send to each remote user.
+                    The download link inside the email is pre-configured with your company's key.
+                </p>
+            </div>
+
+            <!-- Step 3: Monitor -->
+            <div class="step-card border-0" style="background: #e8f4fd;">
+                <div class="step-title">
+                    <span class="step-badge" style="background:#198754;">3</span>
+                    Monitor Your Devices
+                </div>
+                <p class="text-muted mb-3">
+                    Once your remote clients install the agent, their computers will appear in your portal within minutes.
+                </p>
+                <a href="customer-portal.html" class="btn btn-success">
+                    <i class="fas fa-tachometer-alt me-2"></i>Open Customer Portal
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Copy toast -->
+    <div class="copied-toast" id="copiedToast"></div>
+
+    <!-- Footer -->
+    <footer class="py-4 bg-dark text-center">
+        <p class="text-muted mb-0 small">
+            <i class="fas fa-shield-alt text-primary me-1"></i> HTRN85 DNS Security &mdash;
+            <a href="privacy-policy.html" class="text-muted">Privacy Policy</a>
+        </p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/deploy.js"></script>
+</body>
+</html>
