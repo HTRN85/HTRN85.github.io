@@ -139,6 +139,18 @@
                                     <!-- Square Payment Form -->
                                     <div id="payment-form">
                                         <div id="card-container" class="mb-3"></div>
+
+                                        <!-- Promo Code -->
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold small">Promo Code (optional)</label>
+                                            <div class="input-group input-group-sm">
+                                                <input type="text" class="form-control text-uppercase" id="promoCodeInput"
+                                                       placeholder="Enter code" maxlength="30" autocomplete="off"
+                                                       oninput="this.value=this.value.toUpperCase()">
+                                                <button class="btn btn-outline-secondary" type="button" id="applyPromoBtn" onclick="applyPromoCode()">Apply</button>
+                                            </div>
+                                            <div id="promoStatus" class="small mt-1"></div>
+                                        </div>
                                         
                                         <div class="mb-3 form-check">
                                             <input type="checkbox" class="form-check-input" id="termsAgree" required>

@@ -59,7 +59,9 @@ const CheckoutState = {
     selectedPlan: null,
     customerInfo: null,
     isProcessing: false,
-    squareInitRetries: 0
+    squareInitRetries: 0,
+    promoCode: null,
+    promoDiscount: 0   // 0–100 percent
 };
 
 // ============================================================================
@@ -186,7 +188,8 @@ const ApiClient = {
                 companyName: customerInfo.companyName,
                 contactName: `${customerInfo.firstName} ${customerInfo.lastName}`.trim(),
                 planType:    plan.name,
-                paymentId:   paymentToken
+                paymentId:   paymentToken,
+                promoCode:   CheckoutState.promoCode || null
             })
         });
     }
@@ -621,6 +624,12 @@ const Payment = {
         UIUtils.showLoading();
 
         try {
+            // 100% promo codes bypass Square entirely
+            if (CheckoutState.promoDiscount >= 100) {
+                await this.processPayment('promo_' + (CheckoutState.promoCode || 'FREE'));
+                return;
+            }
+
             const result = await CheckoutState.card.tokenize();
 
             if (result.status === 'OK') {
@@ -726,6 +735,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Expose necessary functions to global scope for HTML onclick handlers
 window.goBackToInfo = () => Checkout.goBackToInfo();
+
+/**
+ * Apply a promo code — calls backend to validate, then updates the displayed price.
+ */
+window.applyPromoCode = async function () {
+    const input  = document.getElementById('promoCodeInput');
+    const status = document.getElementById('promoStatus');
+    const code   = (input?.value || '').trim().toUpperCase();
+
+    if (!code) {
+        status.innerHTML = '<span class="text-muted">Please enter a promo code.</span>';
+        return;
+    }
+
+    const btn = document.getElementById('applyPromoBtn');
+    btn.disabled = true;
+    status.innerHTML = '<span class="text-muted"><i class="fas fa-spinner fa-spin me-1"></i>Checking...</span>';
+
+    try {
+        const res  = await fetch(`${CONFIG.API_BASE_URL}/purchase/validate-promo?code=${encodeURIComponent(code)}`);
+        const data = await res.json();
+
+        if (data.valid) {
+            CheckoutState.promoCode     = code;
+            CheckoutState.promoDiscount = data.discountPercent;
+
+            // Update displayed price
+            const plan = CheckoutState.selectedPlan;
+            if (plan) {
+                const discounted = data.discountPercent >= 100
+                    ? 0
+                    : Math.round(plan.price * (1 - data.discountPercent / 100));
+
+                const priceEl = document.getElementById('finalPrice');
+                if (priceEl) priceEl.textContent = discounted.toLocaleString();
+
+                // Update pay button label
+                const payBtn = document.getElementById('card-button');
+                if (payBtn) {
+                    payBtn.innerHTML = discounted === 0
+                        ? '<i class="fas fa-lock"></i> Complete Purchase — FREE'
+                        : `<i class="fas fa-lock"></i> Complete Purchase - $${discounted.toLocaleString()}`;
+                }
+            }
+
+            status.innerHTML = `<span class="text-success"><i class="fas fa-check-circle me-1"></i>${data.message}</span>`;
+            input.disabled   = true;
+            btn.textContent  = 'Applied';
+        } else {
+            CheckoutState.promoCode     = null;
+            CheckoutState.promoDiscount = 0;
+            status.innerHTML = `<span class="text-danger"><i class="fas fa-times-circle me-1"></i>${data.message}</span>`;
+            btn.disabled = false;
+        }
+    } catch (err) {
+        status.innerHTML = '<span class="text-danger">Could not validate code. Try again.</span>';
+        btn.disabled = false;
+    }
+};
+
+// Allow pressing Enter in the promo input
+document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && document.activeElement?.id === 'promoCodeInput') {
+            window.applyPromoCode();
+        }
+    });
+});
 
 // ============================================================================
 // ABANDONED CHECKOUT TRACKER
