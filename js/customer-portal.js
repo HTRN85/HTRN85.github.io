@@ -1,6 +1,7 @@
 'use strict';
 
-const API = '/api/organization';
+const API_BASE = 'https://yjbgqnugsw.us-east-1.awsapprunner.com';
+const API = API_BASE + '/api/organization';
 const SESSION_KEY = 'portalKey';
 
 // ============================================================================
@@ -10,6 +11,8 @@ const SESSION_KEY = 'portalKey';
 const Portal = {
     activationKey: null,
     orgData: null,
+    _refreshTimer: null,
+    _refreshInterval: 30000,   // 30 seconds
 
     async init() {
         // Format activation key input as user types
@@ -104,11 +107,14 @@ const Portal = {
 
             if (statsRes.ok && statsData.success) {
                 this.renderStats(statsData);
+                this.setLastUpdated();
             }
 
             // Switch screens
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('portalScreen').style.display = 'block';
+
+            this.startAutoRefresh();
 
         } catch (err) {
             console.error('Portal load error:', err);
@@ -160,14 +166,14 @@ const Portal = {
         // Clients table
         const tbody = document.getElementById('clientsTable');
         if (clients.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4">
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-4">
                 <i class="fas fa-laptop fa-2x mb-2 d-block opacity-25"></i>
                 No computers registered yet.<br>
                 <small>Install the client software using your activation key.</small>
             </td></tr>`;
         } else {
             tbody.innerHTML = clients.map(c => {
-                const online = new Date(c.lastSeen) > new Date(Date.now() - 24*60*60*1000);
+                const online   = new Date(c.lastSeen) > new Date(Date.now() - 24*60*60*1000);
                 const lastSeen = new Date(c.lastSeen).toLocaleString();
                 return `<tr class="client-row">
                     <td>
@@ -178,6 +184,13 @@ const Portal = {
                     <td><code class="small">${esc(c.ipAddress)}</code></td>
                     <td><small class="text-muted">${lastSeen}</small></td>
                     <td class="text-end"><span class="badge bg-danger-subtle text-danger">${c.blockedQueries.toLocaleString()}</span></td>
+                    <td class="text-end">
+                        <button class="btn btn-sm btn-outline-danger py-0"
+                            title="Remove this computer from your organisation"
+                            onclick="Portal.revokeClient(${c.id}, '${esc(c.computerName)}')">
+                            <i class="fas fa-user-minus"></i>
+                        </button>
+                    </td>
                 </tr>`;
             }).join('');
         }
@@ -231,20 +244,75 @@ const Portal = {
     },
 
     // ── REFRESH ───────────────────────────────────────────────────────────
-    async refresh() {
+    async refresh(manual = false) {
         if (!this.activationKey) return;
-        this.showLoading(true);
+
+        // Spin the icon during manual refresh; silent for auto-refresh
+        const icon = document.getElementById('refreshIcon');
+        if (manual && icon) icon.classList.add('fa-spin');
+
         try {
             const res = await fetch(`${API}/portal/stats/${encodeURIComponent(this.activationKey)}`);
             const data = await res.json();
-            if (res.ok && data.success) this.renderStats(data);
+            if (res.ok && data.success) {
+                this.renderStats(data);
+                this.setLastUpdated();
+            }
         } finally {
-            this.showLoading(false);
+            if (manual && icon) icon.classList.remove('fa-spin');
+        }
+    },
+
+    setLastUpdated() {
+        const label = document.getElementById('lastUpdatedLabel');
+        const time  = document.getElementById('lastUpdatedTime');
+        if (label && time) {
+            time.textContent = new Date().toLocaleTimeString();
+            label.style.display = '';
+        }
+    },
+
+    startAutoRefresh() {
+        this.stopAutoRefresh();
+        this._refreshTimer = setInterval(() => this.refresh(false), this._refreshInterval);
+    },
+
+    stopAutoRefresh() {
+        if (this._refreshTimer) {
+            clearInterval(this._refreshTimer);
+            this._refreshTimer = null;
         }
     },
 
     // ── LOGOUT ────────────────────────────────────────────────────────────
+    // ── REVOKE CLIENT ─────────────────────────────────────────────────────
+    async revokeClient(clientId, computerName) {
+        const confirmed = confirm(
+            `Remove "${computerName}" from your organisation?\n\n` +
+            `This computer will no longer count against your licence and your ` +
+            `organisation's rules (whitelist / custom blocks) will not apply to it.\n\n` +
+            `The computer can be re-added by running the installer with your activation key.`
+        );
+        if (!confirmed) return;
+
+        try {
+            const res  = await fetch(`${API}/portal/clients/${encodeURIComponent(this.activationKey)}/${clientId}`, {
+                method: 'DELETE'
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                // Refresh stats immediately so the table updates
+                await this.refresh(false);
+            } else {
+                alert(data.message || 'Failed to remove client.');
+            }
+        } catch {
+            alert('Connection error. Please try again.');
+        }
+    },
+
     logout() {
+        this.stopAutoRefresh();
         sessionStorage.removeItem(SESSION_KEY);
         this.activationKey = null;
         this.orgData = null;
@@ -252,6 +320,8 @@ const Portal = {
         document.getElementById('loginScreen').style.display = '';
         document.getElementById('activationKeyInput').value = '';
         document.title = 'Customer Portal - HTRN85 DNS Security';
+        const label = document.getElementById('lastUpdatedLabel');
+        if (label) label.style.display = 'none';
     },
 
     showLoading(show) {
@@ -422,6 +492,403 @@ function showInlineAlert(el, msg, type) {
     el.innerHTML = `<div class="alert alert-${type} alert-sm py-2 px-3 mb-3 small">${esc(msg)}</div>`;
     setTimeout(() => { el.innerHTML = ''; }, 4000);
 }
+
+// ============================================================================
+// GLOBAL THREAT BLOCKLIST BROWSER
+// ============================================================================
+
+const GlobalThreats = {
+    _page: 1,
+    _totalPages: 1,
+    _searchTimer: null,
+
+    // Category → badge colour
+    _catColour: {
+        Malware:          'danger',
+        Phishing:         'warning',
+        Ransomware:       'danger',
+        CommandAndControl:'dark',
+        Botnet:           'secondary',
+        AdultContent:     'purple',
+        SocialMedia:      'info',
+        Gambling:         'success',
+        Custom:           'primary'
+    },
+
+    async load(page = this._page) {
+        if (!Portal.activationKey) return;
+        this._page = page;
+
+        const q        = (document.getElementById('threatSearch')?.value || '').trim();
+        const category = document.getElementById('threatCategoryFilter')?.value || '';
+        const tbody    = document.getElementById('threatTable');
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4">
+            <span class="spinner-border spinner-border-sm me-2"></span>Loading...</td></tr>`;
+
+        try {
+            const params = new URLSearchParams({ page, pageSize: 50 });
+            if (q)        params.set('q', q);
+            if (category) params.set('category', category);
+
+            const res  = await fetch(`${API}/portal/threats/${encodeURIComponent(Portal.activationKey)}?${params}`);
+            const data = await res.json();
+            if (!res.ok || !data.success) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-danger text-center py-3">Failed to load.</td></tr>`;
+                return;
+            }
+
+            this._totalPages = data.totalPages;
+            this._renderSummary(data.summary);
+            this._renderTable(data.domains);
+            this._renderPagination(data.page, data.totalPages, data.total);
+
+        } catch {
+            tbody.innerHTML = `<tr><td colspan="4" class="text-danger text-center py-3">Connection error.</td></tr>`;
+        }
+    },
+
+    _renderSummary(summary) {
+        const el = document.getElementById('threatSummaryBadges');
+        const total = summary.reduce((s, c) => s + c.count, 0);
+        setText('threatTotalLabel', `${total.toLocaleString()} total blocked domains`);
+
+        const fmtCat = s => s.replace(/([a-z])([A-Z])/g, '$1 $2');
+        el.innerHTML = summary
+            .sort((a, b) => b.count - a.count)
+            .map(c => {
+                const col = this._catColour[c.category] || 'secondary';
+                return `<span class="badge bg-${col} me-1 mb-1" style="cursor:pointer;"
+                    onclick="document.getElementById('threatCategoryFilter').value='${esc(c.category)}';GlobalThreats.load(1)">
+                    ${fmtCat(esc(c.category))}: ${c.count.toLocaleString()}
+                </span>`;
+            }).join('') +
+            `<span class="badge bg-light text-dark border me-1 mb-1" style="cursor:pointer;"
+                onclick="document.getElementById('threatCategoryFilter').value='';GlobalThreats.load(1)">
+                All
+            </span>`;
+    },
+
+    _renderTable(domains) {
+        const tbody  = document.getElementById('threatTable');
+        const fmtCat = s => s.replace(/([a-z])([A-Z])/g, '$1 $2');
+
+        if (!domains.length) {
+            tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4">No domains match your search.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = domains.map(d => {
+            const col    = this._catColour[d.category] || 'secondary';
+            const remove = d.isCustom
+                ? `<button class="btn btn-sm btn-outline-danger py-0 ms-2" title="Remove"
+                       onclick="DomainLists.removeBlocklist(${d.id},'${esc(d.domain)}');setTimeout(()=>GlobalThreats.load(),600)">
+                       <i class="fas fa-trash-alt"></i></button>`
+                : '';
+            return `<tr>
+                <td class="font-monospace small">${esc(d.domain)}${remove}</td>
+                <td><span class="badge bg-${col}">${fmtCat(esc(d.category))}</span></td>
+                <td><small class="text-muted">${new Date(d.addedDate).toLocaleDateString()}</small></td>
+                <td><small class="text-muted">${esc(d.description || '—')}</small></td>
+            </tr>`;
+        }).join('');
+    },
+
+    _renderPagination(page, totalPages, total) {
+        const pag      = document.getElementById('threatPagination');
+        const info     = document.getElementById('threatPageInfo');
+        const prevBtn  = document.getElementById('threatPrevBtn');
+        const nextBtn  = document.getElementById('threatNextBtn');
+
+        pag.style.display = '';
+        info.textContent  = `Page ${page} of ${totalPages}  (${total.toLocaleString()} domains)`;
+        prevBtn.disabled  = page <= 1;
+        nextBtn.disabled  = page >= totalPages;
+    },
+
+    prevPage() { if (this._page > 1)              this.load(this._page - 1); },
+    nextPage() { if (this._page < this._totalPages) this.load(this._page + 1); },
+
+    // Debounce search input so we don't fire on every keystroke
+    onSearch(value) {
+        clearTimeout(this._searchTimer);
+        this._searchTimer = setTimeout(() => this.load(1), 350);
+    }
+};
+
+// ============================================================================
+// EMAIL REPORTS SETTINGS
+// ============================================================================
+
+const EmailReports = {
+    _recipients: [],   // in-memory list, synced on load and save
+
+    async load() {
+        if (!Portal.activationKey) return;
+        try {
+            const res  = await fetch(`${API}/portal/email-settings/${encodeURIComponent(Portal.activationKey)}`);
+            const data = await res.json();
+            if (!res.ok || !data.success) return;
+
+            document.getElementById('reportEnabled').checked   = data.isEnabled;
+            document.getElementById('reportFrequency').value   = data.frequency  || 'Daily';
+            document.getElementById('reportHour').value        = data.sendHourUtc ?? 7;
+
+            this._recipients = data.recipients || [];
+            this._renderRecipients();
+        } catch (err) {
+            console.error('Failed to load email settings:', err);
+        }
+    },
+
+    async save() {
+        if (!Portal.activationKey) return;
+        const alertEl = document.getElementById('reportSettingsAlert');
+
+        const payload = {
+            isEnabled:   document.getElementById('reportEnabled').checked,
+            frequency:   document.getElementById('reportFrequency').value,
+            sendHourUtc: parseInt(document.getElementById('reportHour').value, 10),
+            recipients:  this._recipients
+        };
+
+        try {
+            const res  = await fetch(`${API}/portal/email-settings/${encodeURIComponent(Portal.activationKey)}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            showInlineAlert(alertEl, res.ok ? `✓ ${data.message}` : (data.message || 'Save failed'), res.ok ? 'success' : 'danger');
+        } catch {
+            showInlineAlert(alertEl, 'Connection error. Please try again.', 'danger');
+        }
+    },
+
+    async sendTest() {
+        if (!Portal.activationKey) return;
+        const btn    = document.getElementById('sendTestBtn');
+        const alertEl = document.getElementById('reportSettingsAlert');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Sending...';
+
+        try {
+            const res  = await fetch(`${API}/portal/email-settings/${encodeURIComponent(Portal.activationKey)}/test`, {
+                method: 'POST'
+            });
+            const data = await res.json();
+            showInlineAlert(alertEl, data.message || (res.ok ? 'Test email sent!' : 'Failed'), res.ok ? 'success' : 'danger');
+        } catch {
+            showInlineAlert(alertEl, 'Connection error.', 'danger');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane me-1"></i>Test';
+        }
+    },
+
+    addRecipient() {
+        const input   = document.getElementById('newRecipientEmail');
+        const alertEl = document.getElementById('recipientAddAlert');
+        const email   = input.value.trim().toLowerCase();
+
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            showInlineAlert(alertEl, 'Please enter a valid email address.', 'warning');
+            return;
+        }
+        if (this._recipients.includes(email)) {
+            showInlineAlert(alertEl, 'That address is already in the list.', 'warning');
+            return;
+        }
+        if (this._recipients.length >= 20) {
+            showInlineAlert(alertEl, 'Maximum 20 recipients allowed.', 'warning');
+            return;
+        }
+
+        this._recipients.push(email);
+        input.value = '';
+        this._renderRecipients();
+    },
+
+    removeRecipient(email) {
+        this._recipients = this._recipients.filter(r => r !== email);
+        this._renderRecipients();
+    },
+
+    _renderRecipients() {
+        const list = document.getElementById('recipientList');
+        setText('recipientCount', this._recipients.length);
+
+        if (!this._recipients.length) {
+            list.innerHTML = '<p class="text-muted text-center small py-3">No recipients yet. Add at least one email address.</p>';
+            return;
+        }
+
+        list.innerHTML = this._recipients.map(email => `
+            <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
+                <span><i class="fas fa-envelope text-primary me-2 small"></i>${esc(email)}</span>
+                <button class="btn btn-sm btn-outline-danger py-0" onclick="EmailReports.removeRecipient('${esc(email)}')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>`).join('');
+    }
+};
+
+// ============================================================================
+// BLOCK PAGE CUSTOMIZATION
+// ============================================================================
+const BlockPage = {
+    _loaded: false,
+
+    async load() {
+        const alertEl = document.getElementById('blockPageAlert');
+        try {
+            const res = await fetch(`${API_BASE}/api/blockpage/settings/${encodeURIComponent(Portal.activationKey)}`);
+            const data = await res.json();
+            if (!res.ok || !data.success) {
+                showInlineAlert(alertEl, data.message || 'Failed to load block page settings.', 'danger');
+                return;
+            }
+
+            const useCustom = !!data.useCustomMessage;
+            document.getElementById('blockMessageDefault').checked = !useCustom;
+            document.getElementById('blockMessageCustom').checked = useCustom;
+            document.getElementById('blockCustomMessage').value = data.customMessage || '';
+            document.getElementById('customMessageContainer').style.display = useCustom ? 'block' : 'none';
+
+            document.getElementById('blockAllowContact').checked = data.allowContact !== false;
+            document.getElementById('blockContactEmail').value = data.contactEmail || '';
+
+            const hasLogo = !!data.logoUrl;
+            document.getElementById('blockUseLogo').checked = hasLogo;
+            document.getElementById('logoContainer').style.display = hasLogo ? 'block' : 'none';
+            const preview = document.getElementById('blockLogoPreview');
+            if (hasLogo) {
+                preview.src = data.logoUrl + '?t=' + Date.now();
+                preview.style.display = 'inline-block';
+                document.getElementById('blockLogoRemoveBtn').style.display = 'inline-block';
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+                document.getElementById('blockLogoRemoveBtn').style.display = 'none';
+            }
+
+            this._wireEvents();
+            this._loaded = true;
+        } catch {
+            showInlineAlert(alertEl, 'Connection error loading block page settings.', 'danger');
+        }
+    },
+
+    _wireEvents() {
+        if (this._loaded) return;
+
+        document.getElementById('blockMessageDefault').addEventListener('change', () => {
+            document.getElementById('customMessageContainer').style.display = 'none';
+        });
+        document.getElementById('blockMessageCustom').addEventListener('change', () => {
+            document.getElementById('customMessageContainer').style.display = 'block';
+        });
+        document.getElementById('blockUseLogo').addEventListener('change', (e) => {
+            document.getElementById('logoContainer').style.display = e.target.checked ? 'block' : 'none';
+        });
+        document.getElementById('blockLogoFile').addEventListener('change', (e) => {
+            const file = e.target.files && e.target.files[0];
+            if (file) this.uploadLogo(file);
+        });
+    },
+
+    async save() {
+        const alertEl = document.getElementById('blockPageAlert');
+        const useCustomMessage = document.getElementById('blockMessageCustom').checked;
+        const customMessage = document.getElementById('blockCustomMessage').value.trim();
+        const allowContact = document.getElementById('blockAllowContact').checked;
+        const contactEmail = document.getElementById('blockContactEmail').value.trim();
+
+        if (useCustomMessage && !customMessage) {
+            showInlineAlert(alertEl, 'Please enter a custom message or choose the default.', 'warning');
+            return;
+        }
+        if (allowContact && contactEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail)) {
+            showInlineAlert(alertEl, 'Please enter a valid contact email.', 'warning');
+            return;
+        }
+
+        try {
+            const res = await fetch(`${API_BASE}/api/blockpage/settings/${encodeURIComponent(Portal.activationKey)}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ useCustomMessage, customMessage, allowContact, contactEmail })
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                showInlineAlert(alertEl, '✓ Block page settings saved.', 'success');
+            } else {
+                showInlineAlert(alertEl, data.message || 'Failed to save settings.', 'danger');
+            }
+        } catch {
+            showInlineAlert(alertEl, 'Connection error saving settings.', 'danger');
+        }
+    },
+
+    async uploadLogo(file) {
+        const alertEl = document.getElementById('blockPageAlert');
+        if (file.size > 2 * 1024 * 1024) {
+            showInlineAlert(alertEl, 'Logo must be 2 MB or smaller.', 'warning');
+            return;
+        }
+        if (!['image/png', 'image/jpeg'].includes(file.type)) {
+            showInlineAlert(alertEl, 'Only PNG or JPEG files are accepted.', 'warning');
+            return;
+        }
+
+        const fd = new FormData();
+        fd.append('file', file);
+
+        try {
+            const res = await fetch(`${API_BASE}/api/blockpage/logo/${encodeURIComponent(Portal.activationKey)}`, {
+                method: 'POST',
+                body: fd
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                const preview = document.getElementById('blockLogoPreview');
+                preview.src = data.logoUrl + '?t=' + Date.now();
+                preview.style.display = 'inline-block';
+                document.getElementById('blockLogoRemoveBtn').style.display = 'inline-block';
+                showInlineAlert(alertEl, '✓ Logo uploaded.', 'success');
+            } else {
+                showInlineAlert(alertEl, data.message || 'Failed to upload logo.', 'danger');
+            }
+        } catch {
+            showInlineAlert(alertEl, 'Connection error uploading logo.', 'danger');
+        }
+    },
+
+    async removeLogo() {
+        const alertEl = document.getElementById('blockPageAlert');
+        if (!confirm('Remove the custom logo?')) return;
+        try {
+            const res = await fetch(`${API_BASE}/api/blockpage/logo/${encodeURIComponent(Portal.activationKey)}`, { method: 'DELETE' });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                document.getElementById('blockLogoPreview').src = '';
+                document.getElementById('blockLogoPreview').style.display = 'none';
+                document.getElementById('blockLogoRemoveBtn').style.display = 'none';
+                document.getElementById('blockLogoFile').value = '';
+                showInlineAlert(alertEl, '✓ Logo removed.', 'success');
+            } else {
+                showInlineAlert(alertEl, data.message || 'Failed to remove logo.', 'danger');
+            }
+        } catch {
+            showInlineAlert(alertEl, 'Connection error removing logo.', 'danger');
+        }
+    },
+
+    preview() {
+        // Open the live block page using a sample domain so the admin can see their settings.
+        const url = `/blocked/preview/${encodeURIComponent(Portal.activationKey)}`;
+        window.open(url, '_blank', 'noopener');
+    }
+};
 
 // ── BOOT ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => Portal.init());
